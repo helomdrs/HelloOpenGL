@@ -1,4 +1,5 @@
 #include "VertexArray.h"
+#include "VertexBufferLayout.h"
 
 //a Vertex Array Object (VAO) is an OpenGL Object that stores all of the satate needed to supply vertex data. 
 //it stores the format of the vertex data as well as the Buffer Objects providing the vertex data arrays

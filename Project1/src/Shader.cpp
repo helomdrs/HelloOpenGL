@@ -1,5 +1,5 @@
 #include "Shader.h"
-
+#include "ErrorHandler.h"
 
 Shader::Shader(const std::string& filePath)
 	: m_FilePath(filePath), m_RendererID(0)

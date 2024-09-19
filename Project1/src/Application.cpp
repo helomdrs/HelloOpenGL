@@ -3,9 +3,10 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "VertexBufferLayout.h"
 
-#include<GL/glew.h>
-#include<GLFW/glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 int main(void)
 {
@@ -75,7 +76,7 @@ int main(void)
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
 
-        shader.SetUniform4f("u_Color", 0.8, 0.3f, 0.8f, 1.0f);
+        shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
         
         vertexArray.Unbind();
         vertexBuffer.Unbind();
@@ -88,25 +89,21 @@ int main(void)
 
 #pragma endregion Shader reading and creation
 
-        /* Loop until the user closes the window */
+        Renderer renderer;
+
+        /* Render loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            renderer.Clear();
 
-            //bind (select) the shader
             shader.Bind();
-
             //some color animation appliance to the uniform
             shader.SetUniform4f("u_Color", red, 0.3f, 0.8f, 1.0f);
 
-            //bind the vertex array and the index buffer
-            vertexArray.Bind();
-            indexBuffer.Bind();
-
-            //The method that actually draw the buffers into the screen (nested into Error Handling)
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
+            //Drawcall
+            renderer.Draw(vertexArray, indexBuffer, shader);
+            
             //some color animation logic
             if (red > 1.0f)
                 increment = -0.05f;
