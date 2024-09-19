@@ -4,6 +4,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "VertexBufferLayout.h"
+#include "Texture.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -39,12 +40,12 @@ int main(void)
 
 #pragma region vertices datas
     {
-        //creates an array with the vertex positions of the triangle
+        //an array with the vertex coordinates of the triangle and the texture coordinates
         float positions[] = {
-            -0.5f, -0.5f, //0
-             0.5f, -0.5f, //1
-             0.5f,  0.5f, //2
-            -0.5f,  0.5f  //3
+            -0.5f, -0.5f, 0.0f, 0.0f,   //0 - bottom left
+             0.5f, -0.5f, 1.0f, 0.0f,   //1
+             0.5f,  0.5f, 1.0f, 1.0f,   //2 - uper right
+            -0.5f,  0.5f, 0.0f, 1.0f    //3
         };
 
         //use an array of indices so more than one triangle can share the same vertexes 
@@ -60,9 +61,11 @@ int main(void)
         VertexArray vertexArray;
 
         //Creates and bind the vertex buffer on its own class
-        VertexBuffer vertexBuffer(positions, 4 * 2 * sizeof(float));
+        VertexBuffer vertexBuffer(positions, 4 * 4 * sizeof(float));
 
         VertexBufferLayout layout;
+        // the buffer stores 4 floats: 2 for vertices and 2 for texture coodinates
+        layout.Push<float>(2); 
         layout.Push<float>(2);
         vertexArray.AddBuffer(vertexBuffer, layout);
 
@@ -78,16 +81,31 @@ int main(void)
 
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
         
-        vertexArray.Unbind();
-        vertexBuffer.Unbind();
-        indexBuffer.Unbind();
-        shader.Unbind();
-
         //some color animation attributes
         float red = 0.0f;
         float increment = 0.05f;
 
 #pragma endregion Shader reading and creation
+
+#pragma region Texture creationg and binding
+
+        //enable the blend and define how openGL will blend alpha pixels
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+        //creates and bind the texture
+        Texture texture("res/textures/tiredakali.png");
+        texture.Bind();
+
+        //set an uniform on the shader for the texture on the same slot we binded it
+        shader.SetUniform1i("u_Texture", 0);
+#pragma endregion
+
+        //unbind everything
+        vertexArray.Unbind();
+        vertexBuffer.Unbind();
+        indexBuffer.Unbind();
+        shader.Unbind();
 
         Renderer renderer;
 
