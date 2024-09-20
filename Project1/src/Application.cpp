@@ -6,8 +6,12 @@
 #include "VertexBufferLayout.h"
 #include "Texture.h"
 
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 
 int main(void)
 {
@@ -74,12 +78,18 @@ int main(void)
 
 #pragma endregion Vertex and Index Buffer creation
 
+        //creates a projection matrix based on an orthographic matrix on a 4:3 aspect ratio
+        glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
 #pragma region Shader reading and creation
 
         Shader shader("res/shaders/Basic.shader");
         shader.Bind();
 
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
+
+        //sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
+        shader.SetUniformMat4f("u_MVPmatrix", projectionMatrix);
         
         //some color animation attributes
         float red = 0.0f;

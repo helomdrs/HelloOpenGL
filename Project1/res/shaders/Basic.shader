@@ -6,9 +6,11 @@ layout(location = 1) in vec2 textureCoords;
 
 out vec2 v_TextureCoords;
 
+uniform mat4 u_MVPmatrix;
+
 void main()
 {
-	gl_Position = position;
+	gl_Position = u_MVPmatrix * position;
 	v_TextureCoords = textureCoords;
 }
 
