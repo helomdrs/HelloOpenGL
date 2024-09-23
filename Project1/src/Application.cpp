@@ -23,7 +23,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -46,10 +46,10 @@ int main(void)
     {
         //an array with the vertex coordinates of the triangle and the texture coordinates
         float positions[] = {
-            -0.5f, -0.5f, 0.0f, 0.0f,   //0 - bottom left
-             0.5f, -0.5f, 1.0f, 0.0f,   //1
-             0.5f,  0.5f, 1.0f, 1.0f,   //2 - uper right
-            -0.5f,  0.5f, 0.0f, 1.0f    //3
+            100.f,  100.0f, 0.0f, 0.0f,   //0 - bottom left
+            200.0f, 100.0f, 1.0f, 0.0f,   //1
+            200.0f, 200.0f, 1.0f, 1.0f,   //2 - uper right
+            100.0f, 200.0f, 0.0f, 1.0f    //3
         };
 
         //use an array of indices so more than one triangle can share the same vertexes 
@@ -79,7 +79,13 @@ int main(void)
 #pragma endregion Vertex and Index Buffer creation
 
         //creates a projection matrix based on an orthographic matrix on a 4:3 aspect ratio
-        glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+        glm::mat4 projectionMatrix = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+
+        //a view matrix - the position of the camera and move it to the right (moving the things to the left)
+        glm::mat4 viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+
+        glm::mat4 modelViewProjMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
 #pragma region Shader reading and creation
 
@@ -89,7 +95,7 @@ int main(void)
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
         //sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
-        shader.SetUniformMat4f("u_MVPmatrix", projectionMatrix);
+        shader.SetUniformMat4f("u_MVPmatrix", modelViewProjMatrix);
         
         //some color animation attributes
         float red = 0.0f;
