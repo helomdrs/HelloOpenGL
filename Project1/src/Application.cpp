@@ -9,9 +9,12 @@
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 
+#include "vendor/im_gui/imgui.h";
+#include "vendor/im_gui/imgui_impl_glfw.h";
+#include "vendor/im_gui/imgui_impl_opengl3.h"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 
 int main(void)
 {
@@ -23,7 +26,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(960, 540, "Hello OpenGL!", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -40,7 +43,27 @@ int main(void)
         std::cout << "Error!" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
-#pragma endregion GLFW app config
+#pragma endregion
+
+#pragma region ImGui setup
+
+    //setup and initialization of imGui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");
+
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.Fonts->AddFontDefault();
+    io.Fonts->Build();
+
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+#pragma endregion
 
 #pragma region vertices datas
     {
@@ -57,7 +80,7 @@ int main(void)
             0, 1, 2,
             2, 3, 0
         };
-#pragma endregion vertices data
+#pragma endregion
 
 #pragma region Vertex and Index Buffer creation
 
@@ -76,16 +99,16 @@ int main(void)
         //Creates and bind the index buffer on its own class
         IndexBuffer indexBuffer(indices, 6);
 
-#pragma endregion Vertex and Index Buffer creation
+#pragma endregion
+
+#pragma region Matrix creations
 
         //creates a projection matrix based on an orthographic matrix on a 4:3 aspect ratio
         glm::mat4 projectionMatrix = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 
         //a view matrix - the position of the camera and move it to the right (moving the things to the left)
         glm::mat4 viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-
-        glm::mat4 modelViewProjMatrix = projectionMatrix * viewMatrix * modelMatrix;
+#pragma endregion   
 
 #pragma region Shader reading and creation
 
@@ -93,15 +116,12 @@ int main(void)
         shader.Bind();
 
         shader.SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
-
-        //sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
-        shader.SetUniformMat4f("u_MVPmatrix", modelViewProjMatrix);
         
         //some color animation attributes
         float red = 0.0f;
         float increment = 0.05f;
 
-#pragma endregion Shader reading and creation
+#pragma endregion
 
 #pragma region Texture creationg and binding
 
@@ -117,13 +137,18 @@ int main(void)
         shader.SetUniform1i("u_Texture", 0);
 #pragma endregion
 
+#pragma region Unbiding all objects so far
+
         //unbind everything
         vertexArray.Unbind();
         vertexBuffer.Unbind();
         indexBuffer.Unbind();
         shader.Unbind();
 
+#pragma endregion
+
         Renderer renderer;
+        glm::vec3 translation(200, 200, 0);
 
         /* Render loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -131,20 +156,41 @@ int main(void)
             /* Render here */
             renderer.Clear();
 
+            // Start the Dear ImGui frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            //apply the model matrix
+            glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), translation);
+            glm::mat4 modelViewProjMatrix = projectionMatrix * viewMatrix * modelMatrix;
+
+            //bind (select) the shader so we can send the uniforms to it
             shader.Bind();
-            //some color animation appliance to the uniform
-            shader.SetUniform4f("u_Color", red, 0.3f, 0.8f, 1.0f);
+
+            //sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
+            shader.SetUniformMat4f("u_MVPmatrix", modelViewProjMatrix);
 
             //Drawcall
             renderer.Draw(vertexArray, indexBuffer, shader);
-            
-            //some color animation logic
-            if (red > 1.0f)
-                increment = -0.05f;
-            else if (red < 0.0f)
-                increment = 0.05f;
 
-            red += increment;
+#pragma region ImGui window
+            {
+                ImGui::Begin("Hello, OpenGL!"); 
+
+                //ImGui will keep displaying the avarege fps
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+                //Use the ImGUI slider to translate the image through the screen
+                ImGui::Text("Use the slider to translate the image on the screen");
+                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);
+
+                ImGui::End();
+            }
+#pragma endregion
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             /* Swap front and back buffers */
             GLCall(glfwSwapBuffers(window));
@@ -154,6 +200,11 @@ int main(void)
         }
     }
 
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
+
     return 0;
 }
