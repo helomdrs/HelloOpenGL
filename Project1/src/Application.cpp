@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "VertexBufferLayout.h"
 #include "Texture.h"
+#include "tests/TestClearColor.h"
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
@@ -147,12 +148,25 @@ int main(void)
 
 #pragma endregion
 
+#pragma region Test Framework setup
+
+        //initial setup
+        TestFramework::Test* currentTest = nullptr;
+        TestFramework::TestMenu* testMenu = new TestFramework::TestMenu(currentTest);
+        currentTest = testMenu;
+
+        //creates the tests
+        testMenu->RegisterTest<TestFramework::TestClearColor>("Clear Color");
+
+#pragma endregion
+
         Renderer renderer;
         glm::vec3 translation(200, 200, 0);
 
         /* Render loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+#pragma region Application setup
             /* Render here */
             renderer.Clear();
 
@@ -160,6 +174,30 @@ int main(void)
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
+#pragma endregion
+
+#pragma region Test framework application on screen
+
+            //setup the test framework on screen
+            if (currentTest)
+            {
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRenderer();
+                ImGui::Begin("Test");
+                
+                //if the user is not on the tests page and hit the back button
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+
+                currentTest->OnImGuiRenderer();
+                ImGui::End();
+            }
+#pragma endregion
+
+#pragma region Model Matrix application
 
             //apply the model matrix
             glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), translation);
@@ -170,6 +208,7 @@ int main(void)
 
             //sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
             shader.SetUniformMat4f("u_MVPmatrix", modelViewProjMatrix);
+#pragma endregion
 
             //Drawcall
             renderer.Draw(vertexArray, indexBuffer, shader);
@@ -198,6 +237,12 @@ int main(void)
             /* Poll for and process events */
             GLCall(glfwPollEvents());
         }
+#pragma region Cleanup everything
+
+        //clear the tests
+        delete currentTest;
+        if (currentTest != testMenu)
+            delete testMenu;
     }
 
     // Cleanup
@@ -205,6 +250,7 @@ int main(void)
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
     glfwTerminate();
+#pragma endregion
 
     return 0;
 }
