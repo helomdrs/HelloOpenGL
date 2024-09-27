@@ -6,6 +6,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestAnimatedShader.h"
+#include "tests/TestDvdLogo.h"
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
@@ -65,7 +66,8 @@ int main(void)
         //creates the tests
         testMenu->RegisterTest<TestFramework::TestClearColor>("Clear Color");
         testMenu->RegisterTest<TestFramework::TestTexture2D>("2D Texture");
-        testMenu->RegisterTest <TestFramework::TestAnimatedShader>("Test Animated Shader");
+        testMenu->RegisterTest<TestFramework::TestAnimatedShader>("Test Animated Shader");
+        testMenu->RegisterTest<TestFramework::TestDvdLogo>("Dvd Logo");
 
         Renderer renderer;
 
@@ -83,7 +85,7 @@ int main(void)
             //setup the test framework on screen
             if (currentTest)
             {
-                currentTest->OnUpdate(0.2f);
+                currentTest->OnUpdate(0.1f);
                 currentTest->OnRenderer();
 
                 ImGui::Begin("Hello, OpenGL! Let's do some testing");

@@ -75,6 +75,9 @@
     <ClCompile Include="src\tests\TestAnimatedShader.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestDvdLogo.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\TextureShader.shader" />
@@ -493,6 +496,7 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </None>
     <None Include="res\shaders\BasicShader.shader" />
+    <None Include="res\shaders\DVDShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -1425,12 +1429,15 @@
     <ClInclude Include="src\tests\TestAnimatedShader.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestDvdLogo.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\google.png">
+    <Image Include="res\textures\tiredakali.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
-    <Image Include="res\textures\tiredakali.png">
+    <Image Include="res\textures\dvd.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
   </ItemGroup>

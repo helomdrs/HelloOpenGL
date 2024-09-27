@@ -37,6 +37,12 @@ void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
     GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
+void Shader::SetUniform2f(const std::string& name, float v0, float v1)
+{
+    //uniforms are varibales that can be setted on the CPU side (C++)
+    GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
+}
+
 void Shader::SetUniform1f(const std::string& name, float value)
 {
     //uniforms are varibales that can be setted on the CPU side (C++)
