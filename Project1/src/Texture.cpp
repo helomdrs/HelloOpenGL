@@ -30,9 +30,6 @@ Texture::Texture(const std::string& path)
 	//format is the format of the data we're proving to OpenGL
 	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
 
-	//unbind the texture
-	Unbind();
-
 	//if the buffer has content, we free it to free memory on the CPU
 	if (m_LocalBuffer)
 		stbi_image_free(m_LocalBuffer);

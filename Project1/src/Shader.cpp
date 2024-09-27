@@ -57,9 +57,12 @@ int Shader::GetUniformLocation(const std::string& name)
 
     //gets the id of the uniform variable declared on the fragment Shader
     GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-
-    //add the new location to the cache
-    m_UniformLocationCache[name] = location;
+    if (location == -1) 
+        printf("Warning: uniform '%s doesn't exist!\n", name.c_str());
+    else
+        //add the new location to the cache
+        m_UniformLocationCache[name] = location;
+    
     return location;
 }
 

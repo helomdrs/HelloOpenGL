@@ -13,6 +13,7 @@ namespace TestFramework
 	{
 	public:
 		TestTexture2D();
+		~TestTexture2D();
 
 		void OnUpdate(float deltaTime) override;
 		void OnRenderer() override;

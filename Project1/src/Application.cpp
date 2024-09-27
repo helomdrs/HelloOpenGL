@@ -1,7 +1,11 @@
+#include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include "Renderer.h"
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestAnimatedShader.h"
-#include "Renderer.h"
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
@@ -10,10 +14,6 @@
 #include "vendor/im_gui/imgui_impl_glfw.h";
 #include "vendor/im_gui/imgui_impl_opengl3.h"
 
-#include <iostream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 int main(void)
 {
     GLFWwindow* window;
@@ -21,6 +21,10 @@ int main(void)
     /* Initialize the library */
     if (!glfwInit())
         return -1;
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(960, 540, "Hello OpenGL!", NULL, NULL);
@@ -53,10 +57,6 @@ int main(void)
         io.Fonts->AddFontDefault();
         io.Fonts->Build();
 
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
         //initial setup
         TestFramework::Test* currentTest = nullptr;
         TestFramework::TestMenu* testMenu = new TestFramework::TestMenu(currentTest);
@@ -72,6 +72,7 @@ int main(void)
         /* Render loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+            GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             renderer.Clear();
 
             // Start the Dear ImGui frame
@@ -82,7 +83,7 @@ int main(void)
             //setup the test framework on screen
             if (currentTest)
             {
-                currentTest->OnUpdate(0.0f);
+                currentTest->OnUpdate(0.2f);
                 currentTest->OnRenderer();
 
                 ImGui::Begin("Hello, OpenGL! Let's do some testing");

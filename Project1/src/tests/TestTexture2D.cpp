@@ -48,12 +48,13 @@ namespace TestFramework
 		//creates an unique pointer to the heap of an shader object
 		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
 		m_Shader->Bind();
-		m_Shader->SetUniform4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
 		//set an uniform on the shader for the texture on the same slot we binded it
 		m_Texture = std::make_unique<Texture>("res/textures/tiredakali.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
+
+	TestTexture2D::~TestTexture2D() {}
 
 	void TestFramework::TestTexture2D::OnUpdate(float deltaTime)
 	{
@@ -69,18 +70,20 @@ namespace TestFramework
 		Renderer renderer;
 		m_Texture->Bind();
 
-		//calculate the MVP matrix based on the model matrix for the translation
-		glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), m_TranslationMatrix);
-		glm::mat4 modelViewProjMatrix = m_ProjectionMatrix * m_ViewMatrix * modelMatrix;
+		{
+			//calculate the MVP matrix based on the model matrix for the translation
+			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), m_TranslationMatrix);
+			glm::mat4 modelViewProjMatrix = m_ProjectionMatrix * m_ViewMatrix * modelMatrix;
 
-		//bind (select) the shader so we can send the uniforms to it
-		m_Shader->Bind();
+			//bind (select) the shader so we can send the uniforms to it
+			m_Shader->Bind();
 
-		//sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
-		m_Shader->SetUniformMat4f("u_MVP", modelViewProjMatrix);
+			//sends the projection matrix to the vertex shader so it can be used when applying the positions of the vertices
+			m_Shader->SetUniformMat4f("u_MVPmatrix", modelViewProjMatrix);
 
-		//Draw call
-		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
+			//Draw call
+			renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
+		}
 	}
 
 	void TestFramework::TestTexture2D::OnImGuiRenderer()

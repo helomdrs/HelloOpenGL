@@ -28,6 +28,7 @@ namespace TestFramework
 		std::unique_ptr<Shader> m_Shader;
 
 		float m_RedValue;
+		float m_BlueValue;
 		float m_IncrementRate;
 	};
 }
