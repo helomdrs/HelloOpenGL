@@ -25,10 +25,9 @@ namespace TestFramework
 
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
-		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
-		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
-		
+		m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
+		m_Shader = std::make_unique<Shader>("res/shaders/BasicShader.shader");
 	}
 
 	TestAnimatedShader::~TestAnimatedShader()

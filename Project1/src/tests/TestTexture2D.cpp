@@ -46,7 +46,7 @@ namespace TestFramework
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
 		//creates an unique pointer to the heap of an shader object
-		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
+		m_Shader = std::make_unique<Shader>("res/shaders/TextureShader.shader");
 		m_Shader->Bind();
 
 		//set an uniform on the shader for the texture on the same slot we binded it
