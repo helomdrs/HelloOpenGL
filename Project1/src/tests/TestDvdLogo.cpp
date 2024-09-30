@@ -88,6 +88,17 @@ namespace TestFramework
 	void TestDvdLogo::OnImGuiRenderer()
 	{
 		//TODO : create faster and slower button here
+		if (ImGui::Button("Faster"))
+		{
+			m_Velocity += 0.1;
+			m_LogoVelocity = glm::vec2(m_Velocity, m_Velocity);
+		}
+
+		if (ImGui::Button("Slower"))
+		{
+			m_Velocity -= 0.1;
+			m_LogoVelocity = glm::vec2(m_Velocity, m_Velocity);
+		}
 	}
 
 	void TestDvdLogo::UpdatePosition(glm::vec2& logoPosition, const glm::vec2& velocity, float deltaTime)
