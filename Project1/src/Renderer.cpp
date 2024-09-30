@@ -1,19 +1,21 @@
 #include "Renderer.h"
 
-#include<iostream>
+#include "ErrorHandler.h"
 
-void GLClearError()
+
+void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
 {
-    while (glGetError() != GL_NO_ERROR);
+    //bind (select) the vertex array, index buffer and shader
+    shader.Bind();
+    vertexArray.Bind();
+    indexBuffer.Bind();
+    
+    //The method that actually draw the buffers into the screen (nested into Error Handling)
+    GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 
-bool GLLogCall(const char* function, const char* file, int line)
+void Renderer::Clear() const
 {
-    while (GLenum error = glGetError())
-    {
-        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
-        return false;
-    }
-
-    return true;
+    //clear the screen each frame
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
