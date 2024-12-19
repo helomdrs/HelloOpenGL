@@ -1,19 +1,16 @@
-#include <iostream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "Application.h"
 
-#include "Renderer.h"
-#include "tests/TestClearColor.h"
-#include "tests/TestTexture2D.h"
-#include "tests/TestAnimatedShader.h"
-#include "tests/TestDvdLogo.h"
-
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
-
-#include "vendor/im_gui/imgui.h";
-#include "vendor/im_gui/imgui_impl_glfw.h";
-#include "vendor/im_gui/imgui_impl_opengl3.h"
+static void InputCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (action == GLFW_PRESS)
+    {
+        m_InputManager->SetKeyPressed(key, true);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        m_InputManager->SetKeyPressed(key, false);
+    }
+}
 
 int main(void)
 {
@@ -44,6 +41,9 @@ int main(void)
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
+    //set the input callback
+    glfwSetKeyCallback(window, InputCallback);
+
     std::cout << glGetString(GL_VERSION) << std::endl;
     {
         //setup and initialization of imGui
@@ -68,6 +68,7 @@ int main(void)
         testMenu->RegisterTest<TestFramework::TestTexture2D>("2D Texture");
         testMenu->RegisterTest<TestFramework::TestAnimatedShader>("Test Animated Shader");
         testMenu->RegisterTest<TestFramework::TestDvdLogo>("Dvd Logo");
+        testMenu->RegisterTest<TestFramework::SpaceInvaders>("Space Invaders");
 
         Renderer renderer;
 

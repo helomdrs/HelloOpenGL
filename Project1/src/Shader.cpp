@@ -55,6 +55,11 @@ void Shader::SetUniform1i(const std::string& name, int value)
     GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
+void Shader::SetUniform3f(const std::string& name, const glm::vec3& value)
+{
+    GLCall(glUniform3f(GetUniformLocation(name), value.x, value.y, value.z));
+}
+
 int Shader::GetUniformLocation(const std::string& name)
 {
     //fist check if the uniform location already existis in the cache

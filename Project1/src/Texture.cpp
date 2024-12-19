@@ -2,11 +2,11 @@
 #include "ErrorHandler.h"
 #include "vendor/stb_image/stb_image.h"
 
-Texture::Texture(const std::string& path)
+Texture::Texture(const std::string& path, bool toFlip)
 	: m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BytesPerPixel(0)
 {
 	//flips the image upside down because OpenGL's (0,0) is on the bottom left corner :clown:
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(toFlip);
 
 	//loads the texture data and store it on m_LocalBuffer (desired chanels is 4 becuase is RGBA)
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BytesPerPixel, 4);

@@ -31,3 +31,8 @@ void VertexBuffer::Unbind() const
     //Unbind (deselect) the buffer to not be used
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
+
+void VertexBuffer::SetSubData(const void* data, unsigned int size) const
+{
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
+}

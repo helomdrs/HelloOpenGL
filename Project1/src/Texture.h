@@ -11,7 +11,7 @@ private:
 	int m_Width, m_Height, m_BytesPerPixel;
 
 public:
-	Texture(const std::string& path);
+	Texture(const std::string& path, bool toFlip = true);
 	~Texture();
 
 	void Bind(unsigned int slot = 0) const;

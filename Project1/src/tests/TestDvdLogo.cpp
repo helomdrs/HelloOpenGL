@@ -10,7 +10,7 @@
 namespace TestFramework
 {
 	TestFramework::TestDvdLogo::TestDvdLogo()
-		: 	m_Velocity(0.1f), m_DvdHeigth(0.2f), m_DvdWidth(0.4f),
+		: 	m_Velocity(0.1f), m_DvdHeigth(0.2f), m_DvdWidth(0.4f), m_TouchesCounter(0), m_PerfectTouchesCounter(0),
 			m_LogoPosition(glm::vec2(0.0f, 0.0f)), m_LogoVelocity(glm::vec2(m_Velocity, m_Velocity))
 	{
 		//an array with the vertex coordinates of the triangle and the texture coordinates
@@ -65,7 +65,10 @@ namespace TestFramework
 		
 		bool hasCollided = TouchedBorder(m_LogoPosition, m_LogoVelocity);
 		if (hasCollided)
+		{
 			UpdateColor();
+			m_TouchesCounter++;
+		}
 
 		//Draw call
 		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
@@ -87,7 +90,8 @@ namespace TestFramework
 
 	void TestDvdLogo::OnImGuiRenderer()
 	{
-		//TODO : create faster and slower button here
+		ImGui::Text("Logo touched simple borders %d times and had %d perfect touches", m_TouchesCounter, m_PerfectTouchesCounter);
+
 		if (ImGui::Button("Faster"))
 		{
 			m_Velocity += 0.1;
@@ -108,13 +112,16 @@ namespace TestFramework
 		m_Shader->SetUniform2f("u_Transform", logoPosition.x, logoPosition.y);
 	}
 
-	bool TestDvdLogo::TouchedBorder(const glm::vec2& logoPosition, glm::vec2& velocity) const
+	bool TestDvdLogo::TouchedBorder(const glm::vec2& logoPosition, glm::vec2& velocity)
 	{
 		float widthBound = 1 - m_DvdWidth / 2;
 		float heightBound = 1 - m_DvdHeigth / 2;
 
 		bool touchedHorizontalBorders = logoPosition.x >= widthBound || logoPosition.x <= -widthBound;
 		bool touchedVerticalBorders = logoPosition.y >= heightBound || logoPosition.y <= -heightBound;
+
+		if (touchedVerticalBorders && touchedHorizontalBorders)
+			m_PerfectTouchesCounter++;
 
 		if (touchedHorizontalBorders || touchedVerticalBorders)
 		{

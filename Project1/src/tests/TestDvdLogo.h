@@ -26,11 +26,13 @@ namespace TestFramework
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Texture> m_Texture;
 
+		int m_TouchesCounter;
+		int m_PerfectTouchesCounter;
 		float m_DvdWidth, m_DvdHeigth, m_Velocity;
 		glm::vec2 m_LogoPosition, m_LogoVelocity;
 
 		void UpdatePosition(glm::vec2& logoPosition, const glm::vec2& velocity, float deltaTime);
-		bool TouchedBorder(const glm::vec2& logoPosition, glm::vec2& velocity) const;
+		bool TouchedBorder(const glm::vec2& logoPosition, glm::vec2& velocity);
 		void UpdateColor();
 	};
 }
